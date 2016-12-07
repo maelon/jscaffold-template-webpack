@@ -68,7 +68,7 @@ const makeShell = () => {
             $(v).remove();
         }
     });
-    const loaderjs_path = path.join(__dirname, '../static/js/bz.js');
+    const loaderjs_path = path.join(__dirname, './bz.js');
     $('body').append(`<script type="text/javascript">${ uglifyjs.minify(loaderjs_path).code }</script>`);
     const minify = require('html-minifier').minify;
     const result = minify($.html(), {
