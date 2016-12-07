@@ -23,7 +23,7 @@ const makeVInfo = hash => {
     const vinfo = {};
     vinfo['buildHash'] = hash;
     vinfo['buildDate'] = (new Date()).toLocaleString();
-    vinfo['buildVersion'] = version[0];
+    vinfo['buildVersion'] = 'v' + version[0];
     vinfo['buildNumber'] = version[1];
     //const params = process.argv.slice(2);
     //for(let i = 0; i < params.length; i++) {
