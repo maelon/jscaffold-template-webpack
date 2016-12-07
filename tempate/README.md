@@ -1,0 +1,2 @@
+# jscaffold webpack template
+
