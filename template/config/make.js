@@ -4,6 +4,7 @@ const fs = require('fs');
 const path = require('path');
 
 const cheerio = require('cheerio');
+const uglifyjs = require('uglify-js');
 
 const getVersion = () => {
     const config = fs.readFileSync(path.resolve(__dirname, '../src/config.js'), 'utf8');
@@ -67,9 +68,8 @@ const makeShell = () => {
             $(v).remove();
         }
     });
-    $('body').append(`
-        <script type="text/javascript">!function(){var f;if(window.XMLHttpRequest){f=new XMLHttpRequest()}else{throw new Error("unsupport XMLHttpRequest")}if(f){f.responseType="text";f.timeout=10000;f.onreadystatechange=function(j){if(f.readyState===4){if(f.status===200){e(f.responseText)}else{b(f.responseText)}}};f.open("get","vinfo.json?rand="+Math.random().toString().slice(2),true);f.send()}var g=function(){var j=window.navigator.userAgent.toLowerCase();if((/iPhone|iPad|iPod/i).test(j)){return"ios"}else{if((/android/i).test(j)){return"android"}}return"other"};var c=g();var i;var a=0;var d=function(){var k=(i[c]&&i[c]["buildVersion"])||i["buildVersion"];var l=0,q,p,o,m;if(a<i.moduleList.length){q=i.moduleList[a]["name"];p=i.moduleList[a]["hash"];m=i.moduleList[a]["type"];if(i[c]&&i[c]["moduleList"]){for(l=0;l<i[c]["moduleList"].length;l++){if(i[c]["moduleList"][l]["name"]===q){p=i[c]["moduleList"][l]["hash"]}}}o=document.createElement("script");o.setAttribute("type","text/javascript");o.setAttribute("src",[k,q,p].join("/")+"."+m);document.body.appendChild(o);o.onload=h}};var h=function(j){a+=1;d()};var e=function(j){i=JSON.parse(j);d()};var b=function(j){throw new Error(j)}}();</script>
-    `);
+    const loaderjs_path = path.join(__dirname, '../static/js/bz.js');
+    $('body').append(`<script type="text/javascript">${ uglifyjs.minify(loaderjs_path).code }</script>`);
     const minify = require('html-minifier').minify;
     const result = minify($.html(), {
       removeAttributeQuotes: true

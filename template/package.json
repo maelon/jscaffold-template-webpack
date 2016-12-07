@@ -28,7 +28,8 @@
     "babel-plugin-transform-es2015-modules-amd": "^6.18.0",
     "babel-plugin-add-module-exports": "^0.2.1",
     "cheerio": "^0.22.0",
-    "html-minifier": "^3.2.3"
+    "html-minifier": "^3.2.3",
+    "uglify-js": "^2.7.5"
   },
   "dependencies": {
     "vue": "^2.1.3",
