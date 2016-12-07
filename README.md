@@ -61,11 +61,11 @@ In thie directory:
   ```
 
   This json file describes build info.
-  `buildVersion` This is important. Builded according to ___src/config.js___ (the version pattern).
-  `moduleList` This is the default base modules need to load in the browser in sequence.
-  `ios` This specifys ios devices modules loaded.
-  `android` This specifys android devices modules loaded.
-  `other` This specifys other runtime modules loaded.
+  * `buildVersion` This is important. Builded according to ___src/config.js___ (the version pattern).
+  * `moduleList` This is the default base modules need to load in the browser in sequence.
+  * `ios` This specifys ios devices modules loaded.
+  * `android` This specifys android devices modules loaded.
+  * `other` This specifys other runtime modules loaded.
 
   Especially, the module config in ios|android|other will override the default one.
 
@@ -74,7 +74,7 @@ In thie directory:
   In the root directory, file index.html is the template of this.
 
 All other files will be placed in the version directory.
-File load is webpack loader, which webpack modules load info is in it.
-File baselib is the base library used in project. eg: vue, chartjs...
-File app is the project main file.
-Other asynchronous modules will be placed in modules directory with their names.
+* File load is webpack loader, which webpack modules load info is in it.
+* File baselib is the base library used in project. eg: vue, chartjs...
+* File app is the project main file.
+* Other asynchronous modules will be placed in modules directory with their names.
