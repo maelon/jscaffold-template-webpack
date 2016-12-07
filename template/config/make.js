@@ -8,22 +8,23 @@ const uglifyjs = require('uglify-js');
 
 const getVersion = () => {
     const config = fs.readFileSync(path.resolve(__dirname, '../src/config.js'), 'utf8');
-    const match = config.match(/version:\s*['"]?(\d+\.\d+\.\d+)['"]?/);
+    const match = config.match(/version:\s*['"]?(\d+\.\d+\.\d+)\s+build-(\w+)['"]?/);
     if(match) {
-        return match[1];
+        return [match[1], match[2]];
     }
-    return '1.0.0';
+    return ['1.0.0', Math.random().toString().slice(2, 10)];
 };
 
 const makeVInfo = hash => {
-    const version = 'v' + getVersion();
+    const version = getVersion();
     const vinfo_path = path.join(__dirname, '../dist/vinfo.json');
     const fd = fs.openSync(vinfo_path, 'w+');
     fs.closeSync(fd);
     const vinfo = {};
     vinfo['buildHash'] = hash;
     vinfo['buildDate'] = (new Date()).toLocaleString();
-    vinfo['buildVersion'] = version;
+    vinfo['buildVersion'] = version[0];
+    vinfo['buildNumber'] = version[1];
     //const params = process.argv.slice(2);
     //for(let i = 0; i < params.length; i++) {
         //if(params[i] === '--buildversion') {
@@ -38,7 +39,7 @@ const makeVInfo = hash => {
     //vinfo['storePolicy'] = 'default';
     //vinfo['cacheList'] = getCacheFiles(`./dist/${ versionHash }/`);
     vinfo['moduleList'] = [];
-    const html_path = path.join(__dirname, '../dist', `/${ version  }/index.html`);
+    const html_path = path.join(__dirname, '../dist', `/${ 'v' + version[0]  }/index.html`);
     const html = fs.readFileSync(html_path, 'utf8');
     const $ = cheerio.load(html);
     $('body script[src]').map((index, v) => {
@@ -58,7 +59,7 @@ const makeVInfo = hash => {
 };
 
 const makeShell = () => {
-    const version = 'v' + getVersion();
+    const version = 'v' + getVersion()[0];
     const template_path = path.join(__dirname, '../dist', `/${ version  }/index.html`);
     const html = fs.readFileSync(template_path, 'utf8');
     const $ = cheerio.load(html);
