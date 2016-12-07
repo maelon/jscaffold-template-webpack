@@ -79,4 +79,5 @@ All other files will be placed in the version directory.
 * File load is webpack loader, which webpack modules load info is in it.
 * File baselib is the base library used in project. eg: vue, chartjs...
 * File app is the project main file.
+* File buildNumber.json is a build history.
 * Other asynchronous modules will be placed in modules directory with their names.

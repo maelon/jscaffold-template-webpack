@@ -18,8 +18,8 @@ const getVersion = () => {
 const makeVInfo = hash => {
     const version = getVersion();
     const vinfo_path = path.join(__dirname, '../dist/vinfo.json');
-    const fd = fs.openSync(vinfo_path, 'w+');
-    fs.closeSync(fd);
+    const vinfo_fd = fs.openSync(vinfo_path, 'w+');
+    fs.closeSync(vinfo_fd);
     const vinfo = {};
     vinfo['buildHash'] = hash;
     vinfo['buildDate'] = (new Date()).toLocaleString();
@@ -39,21 +39,26 @@ const makeVInfo = hash => {
     //vinfo['storePolicy'] = 'default';
     //vinfo['cacheList'] = getCacheFiles(`./dist/${ versionHash }/`);
     vinfo['moduleList'] = [];
+    const binfo = {};
+    binfo['buildDate'] = (new Date()).toLocaleString();
+    binfo['buildNumber'] = version[1];
+    binfo['moduleList'] = [];
     const html_path = path.join(__dirname, '../dist', `/${ 'v' + version[0]  }/index.html`);
     const html = fs.readFileSync(html_path, 'utf8');
     const $ = cheerio.load(html);
     $('body script[src]').map((index, v) => {
         const info = $(v).attr('src').match(/^v(\d+\.\d+\.\d+)\/(\w+)\/(\w+)\.js/);
         if(info) {
-            vinfo['moduleList'].push({
-                name: info[2],
-                hash: info[3],
-                type: 'js',
-            });
+            vinfo['moduleList'].push({ name: info[2], hash: info[3], type: 'js', });
+            binfo['moduleList'].push({ name: info[2], hash: info[3], type: 'js', });
         }
     });
-
     fs.writeFileSync(vinfo_path, JSON.stringify(vinfo, null, '\t'), 'utf8');
+
+    const binfo_path = path.join(__dirname, `../dist/${vinfo['buildVersion']}/${vinfo['buildNumber']}.json`);
+    const binfo_fd = fs.openSync(binfo_path, 'w+');
+    fs.closeSync(binfo_fd);
+    fs.writeFileSync(binfo_path, JSON.stringify(binfo, null, '\t'), 'utf8');
 
     //console.log('buildinfo', vinfo);
 };
