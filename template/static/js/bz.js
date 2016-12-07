@@ -18,7 +18,7 @@
                 }
             }
         }
-        xhr.open('get', 'vinfo.json?rand' + Math.random().toString().slice(2), true);
+        xhr.open('get', 'vinfo.json?rand=' + Math.random().toString().slice(2), true);
         xhr.send();
     }
 
