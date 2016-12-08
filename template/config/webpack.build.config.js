@@ -19,11 +19,13 @@ const distPath = path.resolve(__dirname, '../dist');
 const rootPath = path.join(distPath, '../');
 const staticPath = path.join(rootPath, 'static');
 exec('rm -rf ' + distPath + '/*');
-exec('cp -R ' + staticPath + ' ' + distPath);
+exec('mkdir ' + distPath + ' static');
+exec('cp -R ' + staticPath + '/* ' + distPath + '/static');
 exec('cp ' + rootPath + '/changelog.txt ' + distPath);
 
-config.output.path = distPath + '/v' + make.getVersion();
-config.output.publicPath = 'v' + make.getVersion() + '/';
+const version = make.getVersion()[0];
+config.output.path = distPath + '/v' + version;
+config.output.publicPath = 'v' + version + '/';
 config.output.filename = '[name]/[chunkhash].js',
 config.output.chunkFilename = 'modules/[name]/[chunkhash].js',
 config.devtool = false;
@@ -68,7 +70,6 @@ webpack(config, (err, stats) => {
         chunkModules: false
     }) + '\n');
 
-    make.getVersion();
     make.makeVInfo(stats.hash);
     make.makeShell();
 })
