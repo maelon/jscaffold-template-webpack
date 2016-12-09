@@ -70,6 +70,6 @@ webpack(config, (err, stats) => {
         chunkModules: false
     }) + '\n');
 
-    make.makeVInfo(stats.hash);
+    make.makeVInfo(stats);
     make.makeShell();
 })

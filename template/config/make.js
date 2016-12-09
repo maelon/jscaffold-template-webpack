@@ -15,13 +15,13 @@ const getVersion = () => {
     return ['1.0.0', Math.random().toString().slice(2, 10)];
 };
 
-const makeVInfo = hash => {
+const makeVInfo = stats => {
     const version = getVersion();
     const vinfo_path = path.join(__dirname, '../dist/vinfo.json');
     const vinfo_fd = fs.openSync(vinfo_path, 'w+');
     fs.closeSync(vinfo_fd);
     const vinfo = {};
-    vinfo['buildHash'] = hash;
+    vinfo['buildHash'] = stats.hash;
     vinfo['buildDate'] = (new Date()).toLocaleString();
     vinfo['buildVersion'] = 'v' + version[0];
     vinfo['buildNumber'] = version[1];
@@ -53,6 +53,12 @@ const makeVInfo = hash => {
             binfo['moduleList'].push({ name: info[2], hash: info[3], type: 'js', });
         }
     });
+    binfo['chunkList'] = [];
+    let chunk;
+    for(let i = 0; i < stats.compilation.chunks.length; i++) {
+        chunk = stats.compilation.chunks[i];
+        binfo['chunkList'].push({ chunkname: chunk['name'], chunkid: chunk['id'], chunkids: chunk['ids'], chunkFullHash: chunk['hash'], chunkRenderedHash: chunk['renderedHash']} );
+    }
     fs.writeFileSync(vinfo_path, JSON.stringify(vinfo, null, '\t'), 'utf8');
 
     const binfo_path = path.join(__dirname, `../dist/${vinfo['buildVersion']}/${vinfo['buildNumber']}.json`);
