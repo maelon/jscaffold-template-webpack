@@ -18,10 +18,10 @@ console.log(`
 const distPath = path.resolve(__dirname, '../dist');
 const rootPath = path.join(distPath, '../');
 const staticPath = path.join(rootPath, 'static');
-exec('rm -rf ' + distPath + '/*');
-exec('mkdir ' + distPath + ' static');
-exec('cp -R ' + staticPath + '/* ' + distPath + '/static');
-exec('cp ' + rootPath + '/changelog.txt ' + distPath);
+exec('rm -rf ' + distPath);
+exec('mkdir -p ' + distPath + '/static');
+exec('cp -R ' + staticPath + '/* ' + distPath + '/static/');
+exec('cp ' + rootPath + 'changelog.txt ' + distPath);
 
 const version = make.getVersion()[0];
 config.output.path = distPath + '/v' + version;

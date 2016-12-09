@@ -38,7 +38,7 @@
     var loadidx = 0;
     var insertJS = function() {
         var version = (vinfo[os] && vinfo[os]['buildVersion']) || vinfo['buildVersion'];
-        var j = 0, n, h, s, t;
+        var j = 0, n, h, s, t, isHashURL;
         if(loadidx < vinfo.moduleList.length) {
             n = vinfo.moduleList[loadidx]['name'];
             h = vinfo.moduleList[loadidx]['hash'];
@@ -52,7 +52,8 @@
             }
             s = document.createElement('script');
             s.setAttribute('type', 'text/javascript');
-            if(vinfo.cache) {
+            isHashURL = (/^https?:\/\//i).test(h);
+            if(vinfo.cache && !isHashURL) {
                 if(hasCache(n, h)) {
                     s.innerHTML = getCache(n, h)['content'];
                     document.body.appendChild(s);
@@ -71,7 +72,11 @@
                     document.body.appendChild(s);
                 }
             } else {
-                s.setAttribute('src', [version, n, h].join('/') + '.' + t);
+                if(!isHashURL) {
+                    s.setAttribute('src', [version, n, h].join('/') + '.' + t);
+                } else {
+                    s.setAttribute('src', h);
+                }
                 document.body.appendChild(s);
                 s.onload = loadedHandler;
             }
