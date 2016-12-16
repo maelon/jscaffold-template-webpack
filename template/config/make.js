@@ -25,6 +25,7 @@ const makeVInfo = stats => {
     vinfo['buildDate'] = (new Date()).toLocaleString();
     vinfo['buildVersion'] = 'v' + version[0];
     vinfo['buildNumber'] = version[1];
+    vinfo['cache'] = !!(process.argv.indexOf('--cache') > -1);
     //const params = process.argv.slice(2);
     //for(let i = 0; i < params.length; i++) {
         //if(params[i] === '--buildversion') {

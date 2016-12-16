@@ -1,6 +1,6 @@
 {
   "name": "jscaffold-template-webpack",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "jscaffold template with webpack",
   "main": "index.js",
   "scripts": {
