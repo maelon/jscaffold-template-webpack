@@ -52,10 +52,12 @@
             }
             s = document.createElement('script');
             s.setAttribute('type', 'text/javascript');
+            s.setAttribute('charset', 'utf-8');
+            s.setAttribute('async', true);
             isHashURL = (/^https?:\/\//i).test(h);
             if(vinfo.cache && !isHashURL) {
                 if(hasCache(n, h)) {
-                    s.innerHTML = getCache(n, h)['content'];
+                    s.appendChild(document.createTextNode(getCache(n, h)['content']));
                     document.body.appendChild(s);
                     loadedHandler();
                 } else {
