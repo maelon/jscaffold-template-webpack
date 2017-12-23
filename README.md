@@ -22,6 +22,7 @@ In thie directory:
 	"buildDate": "12/6/2016, 7:14:30 PM",
 	"buildVersion": "v1.0.0",
 	"buildNumber": "20161107v1",
+    'cache': true,
 	"moduleList": [
 		{
 			"name": "load",
@@ -64,6 +65,7 @@ In thie directory:
   This json file describes build info.
   * `buildVersion` This is important. Builded according to ___src/config.js___ (the version pattern).
   * `buildNumber` This is build number (GNU version style).
+  * `cache` This tells to store base modules in localStorage and load them from next time. Remove "--cache" from package.json will load base modules always from server.
   * `moduleList` This is the default base modules need to load in the browser in sequence.
   * `ios` This specifys ios devices modules loaded.
   * `android` This specifys android devices modules loaded.
