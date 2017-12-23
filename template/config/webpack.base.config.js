@@ -5,21 +5,22 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
     entry: {
-        baselib: ['vue'],
+        baselib: ['react', 'react-dom', 'babel-polyfill'],
         app: [path.join(__dirname, '../src/main')]
     },
     output: {
         path: path.join(__dirname, '../dist'),
         filename: '[name].js',
         chunkFilename: '[name].js',
-        publicPath: '',
-        pathInfo: false
+        publicPath: ''
     },
     resolve: {
-        extensions: ['', '.js', '.vue'],
-        fallback: [path.join(__dirname, '../node_modules')],
+        extensions: ['.js', '.jsx'],
+        modules: [
+            path.join(__dirname, 'src'),
+            'node_modules'
+        ],
         alias: {
-            'vue$': 'vue/dist/vue.common.js',
             'src': path.resolve(__dirname, '../src'),
             'assets': path.resolve(__dirname, '../src/assets'),
             'pages': path.resolve(__dirname, '../src/pages'),
@@ -29,36 +30,43 @@ module.exports = {
     },
     devtool: 'inline-source-map',
     resolveLoader: {
-        fallback: [path.join(__dirname, '../node_modules')]
+        modules: [path.join(__dirname, '../node_modules')],
+        moduleExtensions: ['-loader']
     },
     module: {
-        loaders: [
+        rules: [
             {
-                test: /\.vue$/,
+                test: /\.jsx?$/,
                 exclude: /(node_modules|bower_components)/,
-                loader: 'vue'
+                use: 'babel-loader'
             },
             {
-                test: /\.js$/,
-                exclude: /(node_modules|bower_components)/,
-                loader: 'babel'
+                test: /\.css$/,
+                use: [
+                    { loader: 'style-loader' },
+                    { loader: 'css-loader' }
+                ]
             },
             {
                 test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
                 exclude: /(node_modules|bower_components)/,
-                loader: 'url',
-                query: {
-                    limit: 10000,
-                    name: path.join('static', 'images/[name].[hash:7].[ext]')
+                use: {
+                    loader: 'url-loader',
+                    options: {
+                        limit: 10000,
+                        name: path.join('static', 'images/[name].[hash:7].[ext]')
+                    }
                 }
             },
             {
                 test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
                 exclude: /(node_modules|bower_components)/,
-                loader: 'url',
-                query: {
-                    limit: 10000,
-                    name: path.join('static', 'fonts/[name].[hash:7].[ext]')
+                use: {
+                    loader: 'url-loader',
+                    options: {
+                        limit: 10000,
+                        name: path.join('static', 'fonts/[name].[hash:7].[ext]')
+                    }
                 }
             }
         ]
