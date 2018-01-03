@@ -82,7 +82,7 @@ const makeShell = () => {
         }
     });
     const loaderjs_path = path.join(__dirname, './bz.js');
-    $('body').append(`<script type="text/javascript">${ uglifyjs.minify(loaderjs_path).code }</script>`);
+    $('body').append(`<script type="text/javascript">${ uglifyjs.minify(fs.readFileSync(loaderjs_path, 'utf8')).code }</script>`);
     const minify = require('html-minifier').minify;
     const result = minify($.html(), {
       removeAttributeQuotes: true
