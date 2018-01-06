@@ -35,14 +35,14 @@
     };
     var os = detectOS();
     var vinfo;
-    var loadidx = 0;
-    var insertJS = function() {
+    var insertJS = function(index) {
         var version = (vinfo[os] && vinfo[os]['buildVersion']) || vinfo['buildVersion'];
-        var j = 0, n, h, s, t, isHashURL;
-        if(loadidx < vinfo.moduleList.length) {
-            n = vinfo.moduleList[loadidx]['name'];
-            h = vinfo.moduleList[loadidx]['hash'];
-            t = vinfo.moduleList[loadidx]['type'];
+        var j = 0, n, h, t, m, s, isHashURL;
+        if(index < vinfo.moduleList.length) {
+            m = vinfo.moduleList[index];
+            n = m['name'];
+            h = m['hash'];
+            t = m['type'];
             if(vinfo[os] && vinfo[os]['moduleList']) {
                 for(j = 0; j < vinfo[os]['moduleList'].length; j++) {
                     if(vinfo[os]['moduleList'][j]['name'] === n) {
@@ -50,44 +50,68 @@
                     }
                 }
             }
-            s = document.createElement('script');
-            s.setAttribute('type', 'text/javascript');
-            s.setAttribute('charset', 'utf-8');
-            s.setAttribute('async', true);
             isHashURL = (/^https?:\/\//i).test(h);
             if(vinfo.cache && !isHashURL) {
-                if(hasCache(n, h)) {
-                    s.appendChild(document.createTextNode(getCache(n, h)['content']));
-                    document.body.appendChild(s);
-                    loadedHandler();
-                } else {
-                    ajax_get([version, n, h].join('/') + '.' + t, function(js) {
-                        var n = vinfo.moduleList[loadidx]['name'];
-                        var h = vinfo.moduleList[loadidx]['hash'];
-                        setCache(n, h, js);
-                        s.appendChild(document.createTextNode(js));
-                        loadidx += 1;
-                        insertJS();
-                    }, function(err) {
-                        throw new Error('loadm module '  + n + ' failed');
-                    });
-                    document.body.appendChild(s);
-                }
+                loadModule(index, n, h, t);
             } else {
+                s = document.createElement('script');
+                s.setAttribute('type', 'text/javascript');
+                s.setAttribute('charset', 'utf-8');
                 if(!isHashURL) {
                     s.setAttribute('src', [version, n, h].join('/') + '.' + t);
                 } else {
                     s.setAttribute('src', h);
                 }
                 document.body.appendChild(s);
-                s.onload = loadedHandler;
             }
         }
     };
 
-    var loadedHandler = function(e) {
-        loadidx += 1;
-        insertJS();
+    var loadModule = function(index, n, h, t) {
+        var version = (vinfo[os] && vinfo[os]['buildVersion']) || vinfo['buildVersion'];
+        var j = 0, m, isHashURL;
+        if(index < vinfo.moduleList.length) {
+            m = vinfo.moduleList[index];
+            if(hasCache(n, h)) {
+                m.content = getCache(n, h)['content'];
+                m.done = true;
+                if(checkModuleAllLoaded()) {
+                    executeModuleLoaded();
+                }
+            } else {
+                ajax_get([version, n, h].join('/') + '.' + t, function(js) {
+                    m.content = js;
+                    m.done = true;
+                    setCache(n, h, js);
+                    if(checkModuleAllLoaded()) {
+                        executeModuleLoaded();
+                    }
+                }, function(err) {
+                    throw new Error('loadm module '  + n + ' failed');
+                });
+            }
+        }
+    };
+
+    var checkModuleAllLoaded = function() {
+        for(var i = 0; i < vinfo.moduleList.length; i++) {
+            if(!vinfo.moduleList[i].done) {
+                return false;
+            }
+        }
+        return true;
+    };
+
+    var executeModuleLoaded = function() {
+        console.log(vinfo);
+        var s, i;
+        for(i = 0; i < vinfo.moduleList.length; i++) {
+            s = document.createElement('script');
+            s.setAttribute('type', 'text/javascript');
+            s.setAttribute('charset', 'utf-8');
+            s.appendChild(document.createTextNode(vinfo['moduleList'][i]['content']));
+            document.body.appendChild(s);
+        }
     };
 
     var success = function(result) {
@@ -97,7 +121,11 @@
         } else {
             clearCache();
         }
-        insertJS();
+        if(vinfo.moduleList && vinfo.moduleList.length) {
+            for(var i = 0; i < vinfo.moduleList.length; i++) {
+                insertJS(i);
+            }
+        }
     };
 
     var fail = function(err) {
