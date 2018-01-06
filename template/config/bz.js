@@ -103,7 +103,6 @@
     };
 
     var executeModuleLoaded = function() {
-        console.log(vinfo);
         var s, i;
         for(i = 0; i < vinfo.moduleList.length; i++) {
             s = document.createElement('script');
